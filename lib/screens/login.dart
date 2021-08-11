@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                     'Login',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -103,7 +103,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pushNamed(context, '/register');
+                  },
                   child: Text(
                     ' Click here',
                     style: TextStyle(

@@ -5,6 +5,7 @@ class ColorData {
   static const Color primaryColor = Color(0xFF26637D);
   static const Color white_color = Colors.white;
   static const Color secondaryColor = Color(0xFF368eb3);
+  static const Color lightColor = Color(0xFFa6e4ff);
 }
 
 ThemeData getMaterialTheme(context) {
