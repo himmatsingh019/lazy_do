@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "332933277789",
+    "project_id": "ottplatform-df453",
+    "storage_bucket": "ottplatform-df453.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332933277789:android:19572fd2c3cfec95dfc5b4",
+        "android_client_info": {
+          "package_name": "com.example.ott_platform"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "332933277789-3o0coh1n6b7lfhh72u38icnlrsjkvf4q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ott_platform",
+            "certificate_hash": "0193e25aa8dfab090f8ea977690c686b6e45ef09"
+          }
+        },
+        {
+          "client_id": "332933277789-frr5jcedp42v40e3bfr30bvs3igjgo9e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnAdeEauZR2KOqTxZP3rgoOYv2m931QP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "332933277789-frr5jcedp42v40e3bfr30bvs3igjgo9e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
