@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lazy_do/constants/theme.dart';
 import 'package:lazy_do/screens/login.dart';
+import 'package:lazy_do/screens/my_day.dart';
 
 class HomeScreen extends StatefulWidget {
   String? email = '';
@@ -109,7 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: <Widget>[
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pushNamed(context, '/myday');
+                },
                 child: ListTile(
                   minLeadingWidth: 0,
                   leading: Icon(Icons.wb_sunny_outlined),
@@ -147,6 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
+              //TODO Pomodoro
               Divider(
                 indent: 20,
                 endIndent: 30,

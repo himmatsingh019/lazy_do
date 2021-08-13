@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:lazy_do/constants/theme.dart';
 import 'package:lazy_do/screens/home.dart';
 import 'package:lazy_do/screens/login.dart';
+import 'package:lazy_do/screens/my_day.dart';
 import 'package:lazy_do/screens/register.dart';
 
 Future<void> main() async {
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomeScreen(email: ''),
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),
+        '/myday': (context) => MyDay(),
       },
     );
   }
