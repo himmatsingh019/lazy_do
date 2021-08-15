@@ -6,7 +6,6 @@ import 'package:lazy_do/constants/widgets.dart';
 import 'package:lazy_do/model/task_model.dart';
 import 'package:lazy_do/screens/login.dart';
 import 'package:lazy_do/services/database/database_helper.dart';
-import 'package:sqflite/sqflite.dart';
 
 class HomeScreen extends StatefulWidget {
   String? email = '';
@@ -112,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           GestureDetector(
             onTap: () {
-              // Navigator.pushNamed(context, '/addtask');
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
@@ -151,6 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               );
+              setState(() {});
             },
             child: ListTile(
               minLeadingWidth: 0,
@@ -185,13 +184,23 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height: 20),
           Expanded(
-            child: ListView.builder(
-              itemCount: 0,
-              itemBuilder: (context, index) {
-                return TaskCard(
-                  onLongPress: () {},
-                  title: 'hello',
-                );
+            child: FutureBuilder(
+              future: _db.getTasks(),
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.waiting:
+                    return CircularProgressIndicator();
+                  default:
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        return TaskCard(
+                          title: snapshot.data[index].title,
+                          delete: snapshot.data[index].id,
+                        );
+                      },
+                    );
+                }
               },
             ),
           ),
