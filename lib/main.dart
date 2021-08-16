@@ -2,14 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lazy_do/constants/theme.dart';
-import 'package:lazy_do/screens/add_tasks.dart';
-import 'package:lazy_do/screens/home.dart';
-import 'package:lazy_do/screens/login.dart';
-import 'package:lazy_do/screens/register.dart';
+import 'package:lazy_do/routes.dart';
+import 'package:lazy_do/services/database/database_helper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  Get.put(DatabaseHelper());
   runApp(MyApp());
 }
 
@@ -22,12 +21,7 @@ class MyApp extends StatelessWidget {
       theme: getMaterialTheme(context),
       debugShowCheckedModeBanner: false,
       initialRoute: '/home',
-      routes: {
-        '/home': (context) => HomeScreen(email: ''),
-        '/login': (context) => LoginScreen(),
-        '/register': (context) => RegisterScreen(),
-        '/addtask': (context) => AddTask(),
-      },
+      getPages: AppRoutes.routes,
     );
   }
 }

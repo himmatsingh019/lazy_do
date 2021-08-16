@@ -1,11 +1,24 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:lazy_do/model/task_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper extends GetxController {
-  Future<Database> database() async {
-    return openDatabase(
+  late Database database;
+  List<TaskModel> tasks = [];
+
+  @override
+  void onInit() async {
+    super.onInit();
+    database = await getDatabase();
+    tasks = await getTasks();
+    update();
+  }
+
+  Future<Database> getDatabase() async {
+    return await openDatabase(
       join(await getDatabasesPath(), 'lazytodo.db'),
       onCreate: (db, version) {
         return db.execute(
@@ -17,26 +30,33 @@ class DatabaseHelper extends GetxController {
   }
 
   Future<void> insertTask(TaskModel task) async {
-    Database _db = await database();
-    await _db.insert(
+    await database.insert(
       'lazytodo',
       task.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    tasks = await getTasks();
+    update();
   }
 
-  Future<void> removeTask({id, table}) async {
-    Database _db = await database();
+  void convert() {
+    List<String> stringTask = [];
+    tasks.forEach((task) {
+      stringTask.add(jsonEncode(task.toMap()));
+    });
+    print(stringTask);
+  }
 
-    await _db.rawDelete("DELETE FROM $table WHERE id = $id");
+  Future<void> removeTask(id) async {
+    await database.rawDelete("DELETE FROM 'lazytodo' WHERE id = $id");
+    tasks = await getTasks();
+    update();
   }
 
   Future<List<TaskModel>> getTasks() async {
-    Database _db = await database();
-    List<Map<String, dynamic>> taskMap = await _db.query('lazytodo');
-    print('object');
-    List<TaskModel> taskmodel =
-        taskMap.map((e) => TaskModel(title: e['title'], id: e['id'])).toList();
-    return taskmodel;
+    List<Map<String, dynamic>> taskMap = await database.query('lazytodo');
+    return taskMap
+        .map((e) => TaskModel(title: e['title'], id: e['id']))
+        .toList();
   }
 }

@@ -7,6 +7,7 @@ import 'package:lazy_do/model/task_model.dart';
 import 'package:lazy_do/screens/login.dart';
 import 'package:lazy_do/services/database/database_helper.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   String? email = '';
   HomeScreen({Key? key, this.email}) : super(key: key);
@@ -19,17 +20,16 @@ class _HomeScreenState extends State<HomeScreen> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController titleController = TextEditingController();
   final auth = FirebaseAuth.instance;
-  DatabaseHelper _db = DatabaseHelper();
+  final DatabaseHelper databaseHelper = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorData.lightColor,
+      backgroundColor: ColorData.white_color,
       appBar: AppBar(
-        elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
-        backgroundColor: ColorData.lightColor,
-      ),
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: ColorData.white_color),
       drawer: Drawer(
         elevation: 0,
         child: Container(
@@ -127,15 +127,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     TextButton(
                       onPressed: () async {
                         if (titleController.text != '') {
-                          DatabaseHelper _db = DatabaseHelper();
-
                           TaskModel taskModel =
                               TaskModel(title: titleController.text);
 
-                          await _db.insertTask(taskModel);
+                          await databaseHelper.insertTask(taskModel);
 
                           print('New task added');
-                          Navigator.pop(context);
+                          Get.back();
+                          Get.snackbar(
+                            'Task created',
+                            '',
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
                         }
                       },
                       child: Text('Create'),
@@ -149,7 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               );
-              setState(() {});
             },
             child: ListTile(
               minLeadingWidth: 0,
@@ -163,7 +165,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              databaseHelper.convert();
+            },
             child: ListTile(
               minLeadingWidth: 0,
               leading: Icon(Icons.star_border_outlined),
@@ -175,7 +179,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          //TODO Pomodoro
           Divider(
             indent: 20,
             endIndent: 30,
@@ -184,24 +187,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height: 20),
           Expanded(
-            child: FutureBuilder(
-              future: _db.getTasks(),
-              builder: (context, AsyncSnapshot<dynamic> snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return CircularProgressIndicator();
-                  default:
-                    return ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return TaskCard(
-                          title: snapshot.data[index].title,
-                          delete: snapshot.data[index].id,
-                        );
-                      },
-                    );
-                }
-              },
+            child: GetBuilder<DatabaseHelper>(
+              builder: (controller) => ListView.builder(
+                itemCount: controller.tasks.length,
+                itemBuilder: (context, index) {
+                  return TaskCard(
+                    title: controller.tasks[index].title,
+                    ondelete: () {
+                      controller.removeTask(controller.tasks[index].id);
+                    },
+                  );
+                },
+              ),
             ),
           ),
         ],

@@ -19,7 +19,7 @@ class _VerfiyScreenState extends State<VerfiyScreen> {
   final auth = FirebaseAuth.instance;
   User? user;
   bool isLoading = false;
-  String Email = '';
+  String email = '';
 
   @override
   void initState() {
@@ -28,11 +28,11 @@ class _VerfiyScreenState extends State<VerfiyScreen> {
     user = auth.currentUser;
     user!.sendEmailVerification();
     setState(() {
-      Email = widget.email;
+      email = widget.email;
     });
 
     Timer.periodic(Duration(seconds: 2), (timer) {
-      verifyEmail(context, timer, Email);
+      verifyEmail(context, timer, email);
     });
   }
 

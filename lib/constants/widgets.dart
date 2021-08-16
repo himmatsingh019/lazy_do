@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lazy_do/services/database/database_helper.dart';
 
 class TaskCard extends StatelessWidget {
   final String title;
-  final int delete;
+  final VoidCallback ondelete;
 
   TaskCard({
     Key? key,
     required this.title,
-    required this.delete,
+    required this.ondelete,
   }) : super(key: key);
-
-  DatabaseHelper _db = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +22,14 @@ class TaskCard extends StatelessWidget {
           width: Get.width,
           decoration: BoxDecoration(
             color: Colors.white60,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.4),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: Offset(0, 3),
+              ),
+            ],
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -45,14 +50,7 @@ class TaskCard extends StatelessWidget {
                     icon: Icon(Icons.favorite_border_outlined),
                   ),
                   IconButton(
-                    onPressed: () {
-                      _db.removeTask(id: delete, table: 'lazytodo');
-                      Get.snackbar(
-                        '',
-                        'Task has been deleted',
-                        snackPosition: SnackPosition.BOTTOM,
-                      );
-                    },
+                    onPressed: ondelete,
                     icon: Icon(Icons.delete_outline_outlined),
                   ),
                 ],
