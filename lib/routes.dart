@@ -18,6 +18,7 @@ class AppRoutes {
       name: '/verify',
       page: () => VerfiyScreen(
         email: '',
+        name: '',
       ),
     ),
     GetPage(

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class TaskCard extends StatelessWidget {
+class TaskCard extends StatefulWidget {
   final String title;
-  final VoidCallback ondelete;
 
   TaskCard({
     Key? key,
     required this.title,
-    required this.ondelete,
+    // required this.ondelete,
   }) : super(key: key);
+
+  @override
+  _TaskCardState createState() => _TaskCardState();
+}
+
+class _TaskCardState extends State<TaskCard> {
+  bool _isFav = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +43,7 @@ class TaskCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                title,
+                widget.title,
                 maxLines: 2,
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
@@ -46,11 +52,18 @@ class TaskCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   IconButton(
-                    onPressed: () {},
-                    icon: Icon(Icons.favorite_border_outlined),
+                    splashRadius: 1,
+                    onPressed: () {
+                      setState(() {
+                        _isFav = true;
+                      });
+                    },
+                    icon: Icon(Icons.star),
+                    color: _isFav ? Colors.yellow[700] : Colors.black,
                   ),
                   IconButton(
-                    onPressed: ondelete,
+                    splashRadius: 1,
+                    onPressed: () {},
                     icon: Icon(Icons.delete_outline_outlined),
                   ),
                 ],

@@ -5,12 +5,15 @@ import 'package:lazy_do/constants/theme.dart';
 import 'package:lazy_do/constants/widgets.dart';
 import 'package:lazy_do/model/task_model.dart';
 import 'package:lazy_do/screens/login.dart';
-import 'package:lazy_do/services/database/database_helper.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   String? email = '';
-  HomeScreen({Key? key, this.email}) : super(key: key);
+  String? name = '';
+
+  HomeScreen({Key? key, this.name, this.email}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -20,7 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
   var scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController titleController = TextEditingController();
   final auth = FirebaseAuth.instance;
-  final DatabaseHelper databaseHelper = Get.find();
+  late Box<TaskModel> taskModelBox;
+
+  @override
+  void initState() {
+    super.initState();
+    taskModelBox = Hive.box<TaskModel>('lazydo');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          'Name',
+                          widget.name.toString(),
                           style: TextStyle(
                             fontWeight: FontWeight.w300,
                             color: Colors.black,
@@ -130,14 +139,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           TaskModel taskModel =
                               TaskModel(title: titleController.text);
 
-                          await databaseHelper.insertTask(taskModel);
-
-                          print('New task added');
+                          taskModelBox.add(taskModel);
                           Get.back();
                           Get.snackbar(
                             'Task created',
                             '',
                             snackPosition: SnackPosition.BOTTOM,
+                            duration: Duration(seconds: 1),
                           );
                         }
                       },
@@ -166,7 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           GestureDetector(
             onTap: () {
-              databaseHelper.convert();
+              // databaseHelper.convert();
             },
             child: ListTile(
               minLeadingWidth: 0,
@@ -187,18 +195,24 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height: 20),
           Expanded(
-            child: GetBuilder<DatabaseHelper>(
-              builder: (controller) => ListView.builder(
-                itemCount: controller.tasks.length,
-                itemBuilder: (context, index) {
-                  return TaskCard(
-                    title: controller.tasks[index].title,
-                    ondelete: () {
-                      controller.removeTask(controller.tasks[index].id);
-                    },
-                  );
-                },
-              ),
+            child: ValueListenableBuilder(
+              valueListenable: taskModelBox.listenable(),
+              builder: (context, Box<TaskModel> todos, _) {
+                List<int> keys = todos.keys.cast<int>().toList();
+
+                return ListView.separated(
+                  itemCount: keys.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    final int key = keys[index];
+                    final TaskModel? tasks = todos.get(key);
+                    return TaskCard(
+                      title: tasks!.title,
+                    );
+                  },
+                  separatorBuilder: (context, index) => Divider(),
+                );
+              },
             ),
           ),
         ],

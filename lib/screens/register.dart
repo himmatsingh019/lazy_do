@@ -12,17 +12,17 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  String _email = '', _password = '', _firstName = '', _lastName = '';
+  String _email = '', _password = '', _name = '';
   final auth = FirebaseAuth.instance;
-  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         backgroundColor: ColorData.primaryColor,
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
@@ -36,34 +36,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
               margin: EdgeInsets.only(left: 20, right: 20, top: 50),
               child: TextFormField(
                 decoration: InputDecoration(
-                  hintText: 'First Name',
+                  hintText: 'Name',
                   contentPadding: EdgeInsets.only(left: 10),
                 ),
                 onChanged: (value) {
                   setState(
                     () {
-                      _firstName = value.trim();
-                    },
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: ColorData.white_color,
-              ),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  hintText: 'Last Name',
-                  contentPadding: EdgeInsets.only(left: 10),
-                ),
-                onChanged: (value) {
-                  setState(
-                    () {
-                      _lastName = value.trim();
+                      _name = value.trim();
                     },
                   );
                 },
@@ -123,7 +102,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     .then(
                       (value) => Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
-                          builder: (context) => VerfiyScreen(email: _email),
+                          builder: (context) => VerfiyScreen(
+                            email: _email,
+                            name: _name,
+                          ),
                         ),
                       ),
                     );
